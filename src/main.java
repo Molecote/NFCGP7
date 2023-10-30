@@ -122,7 +122,7 @@ public class main {
         scanner.nextLine(); // Consumir a nova linha pendente
         System.out.print("Descrição do requisito não conforme: ");
         String descricao = scanner.nextLine();
-        System.out.print("Classificação do requisito não conforme (Alta/Média/Baixa): ");
+        System.out.print("Classificação do requisito não conforme (Alta - 5 dias/Média - 3 dias/Baixa - 1 dia): ");
         String classificacao = scanner.nextLine();
         System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
         try {
