@@ -119,19 +119,37 @@ public class main {
     }
 
     private static void adicionarRequisito(Scanner scanner, List<Requisito> requisitos) {
+        Scanner teclado = new Scanner(System.in);
         scanner.nextLine(); // Consumir a nova linha pendente
-        System.out.print("Descrição do requisito não conforme: ");
-        String descricao = scanner.nextLine();
-        System.out.print("Classificação do requisito não conforme (Alta - 5 dias/Média - 3 dias/Baixa - 1 dia): ");
-        String classificacao = scanner.nextLine();
-        System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
-        try {
-            Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-            requisitos.add(new Requisito(descricao, classificacao, dataRevisao));
-            System.out.println("Requisito não conforme adicionado com sucesso.");
-        } catch (ParseException e) {
-            System.out.println("Formato de data inválido. O requisito não será adicionado.");
+        int conf;
+        int taxa = 0;
+        int total = 0;
+        for (int i = 0; i <=14; i++){
+            //System.out.println(pergunta do checklist);
+            System.out.println("O Resultado esperado está conforme? (1 para sim, 2 para não)");
+            conf = Integer.parseInt(teclado.nextLine());
+            switch (conf){
+                case 1:
+                    System.out.println("");
+                    taxa += 1;
+                    break;
+                case 2:
+                    System.out.print("Descrição do requisito não conforme: ");
+                    String descricao = scanner.nextLine();
+                    System.out.print("Classificação do requisito não conforme (Alta - 5 dias/Média - 3 dias/Baixa - 1 dia): ");
+                    String classificacao = scanner.nextLine();
+                    System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
+                    try {
+                        Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
+                        requisitos.add(new Requisito(descricao, classificacao, dataRevisao));
+                        System.out.println("Requisito não conforme adicionado com sucesso.");
+                    } catch (ParseException e) {
+                        System.out.println("Formato de data inválido. O requisito não será adicionado.");
+                    }
+            }
+            total += 1;
         }
+        System.out.println("A taxa de aderência é :" + ((taxa/total))/100 +"%");
     }
 
     private static void editarRequisito(Scanner scanner, List<Requisito> requisitos) {
