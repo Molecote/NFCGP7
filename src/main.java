@@ -5,11 +5,11 @@ import java.text.ParseException;
 
 public class main {
     public static void main(String[] args) {
-        List<Requisito> requisitos = new ArrayList<>();
+        List<Conformidade> conformidades = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
 
-        // Carregando requisitos a partir de um arquivo CSV (se existir)
-        carregarRequisitos(requisitos);
+        // Carregando conformidades a partir de um arquivo CSV (se existir)
+        Conformidade.carregarConformidades(conformidades);
 
         boolean loop = true;
         while (loop) {
@@ -23,16 +23,16 @@ public class main {
 
             switch (op){
                 case 1:
-                    visualizarRequisitos(requisitos);
+                    Conformidade.visualizarConformidades(conformidades);
                     break;
                 case 2:
-                    adicionarRequisito(scanner, requisitos);
+                    adicionarConformidade(scanner, conformidades);
                     break;
                 case 3:
-                    editarRequisito(scanner, requisitos);
+                    editarRequisito(scanner, conformidades);
                     break;
                 case 4:
-                    salvarRequisitos(requisitos);
+                    salvarConformidades(conformidades);
                     System.out.println("Saindo do programa. Requisitos salvos.");
                     loop = false;
                     break;
@@ -42,8 +42,8 @@ public class main {
         }
     }
 
-    private static void carregarRequisitos(List<Requisito> requisitos) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("requisitos.csv"))) {
+    private static void carregarConformidades(List<Conformidade> conformidades) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("conformidades.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -51,7 +51,7 @@ public class main {
                     String descricao = parts[0];
                     String classificacao = parts[1];
                     Date dataRevisao = new SimpleDateFormat("yyyy-MM-dd").parse(parts[2]);
-                    requisitos.add(new Requisito(descricao, classificacao, dataRevisao));
+                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -61,11 +61,11 @@ public class main {
         }
     }
 
-    private static void salvarRequisitos(List<Requisito> requisitos) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("requisitos.csv"))) {
-            for (Requisito requisito : requisitos) {
-                String linha = requisito.getDescricao() + "," + requisito.getClassificacao() + "," +
-                        new SimpleDateFormat("yyyy-MM-dd").format(requisito.getDataRevisao());
+    private static void salvarConformidades(List<Conformidade> conformidades) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("conformidades.csv"))) {
+            for (Conformidade conformidade : conformidades) {
+                String linha = conformidade.getDescricao() + "," + conformidade.getClassificacao() + "," +
+                        new SimpleDateFormat("yyyy-MM-dd").format(conformidade.getDataRevisao());
                 writer.println(linha);
             }
         } catch (IOException e) {
@@ -73,16 +73,16 @@ public class main {
         }
     }
 
-    private static void visualizarRequisitos(List<Requisito> requisitos) {
-        for (Requisito requisito : requisitos) {
-            System.out.println("Descrição: " + requisito.getDescricao());
-            System.out.println("Classificação: " + requisito.getClassificacao());
-            System.out.println("Data até próxima revisão: " + new SimpleDateFormat("dd/MM/yyyy").format(requisito.getDataRevisao()));
+    private static void visualizarConformidades(List<Conformidade> conformidades) {
+        for (Conformidade conformidade : conformidades) {
+            System.out.println("Descrição: " + conformidade.getDescricao());
+            System.out.println("Classificação: " + conformidade.getClassificacao());
+            System.out.println("Data até próxima revisão: " + new SimpleDateFormat("dd/MM/yyyy").format(conformidade.getDataRevisao()));
             System.out.println();
         }
     }
 
-    private static void adicionarRequisito(Scanner scanner, List<Requisito> requisitos) {
+    private static void adicionarConformidade(Scanner scanner, List<Conformidade> conformidades) {
         Scanner teclado = new Scanner(System.in);
         scanner.nextLine(); // Consumir a nova linha pendente
         int conf;
@@ -105,7 +105,7 @@ public class main {
                     System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
                     try {
                         Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-                        requisitos.add(new Requisito(descricao, classificacao, dataRevisao));
+                        conformidades.add(new Conformidade(descricao, classificacao, dataRevisao));
                         System.out.println("Requisito não conforme adicionado com sucesso.");
                     } catch (ParseException e) {
                         System.out.println("Formato de data inválido. O requisito não será adicionado.");
@@ -116,30 +116,30 @@ public class main {
         System.out.println("A taxa de aderência é :" + ((taxa/total))/100 +"%");
     }
 
-    private static void editarRequisito(Scanner scanner, List<Requisito> requisitos) {
+    private static void editarRequisito(Scanner scanner, List<Conformidade> requisitos) {
         System.out.print("Informe a descrição do requisito a ser editado: ");
         String descricao = scanner.next();
         boolean encontrado = false;
-        for (Requisito requisito : requisitos) {
-            if (requisito.getDescricao().equals(descricao)) {
+        for (Conformidade conformidade : requisitos) {
+            if (conformidade.getDescricao().equals(descricao)) {
                 encontrado = true;
                 scanner.nextLine(); // Consumir a nova linha pendente
                 System.out.print("Nova descrição (ou pressione Enter para manter a atual): ");
                 String novaDescricao = scanner.nextLine();
                 if (!novaDescricao.isEmpty()) {
-                    requisito.setDescricao(novaDescricao);
+                    conformidade.setDescricao(novaDescricao);
                 }
                 System.out.print("Nova classificação (Alta/Média/Baixa ou pressione Enter para manter a atual): ");
                 String novaClassificacao = scanner.nextLine();
                 if (!novaClassificacao.isEmpty()) {
-                    requisito.setClassificacao(novaClassificacao);
+                    conformidade.setClassificacao(novaClassificacao);
                 }
                 System.out.print("Nova data até próxima revisão (formato dd/MM/yyyy ou pressione Enter para manter a atual): ");
                 String novaData = scanner.nextLine();
                 if (!novaData.isEmpty()) {
                     try {
                         Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(novaData);
-                        requisito.setDataRevisao(dataRevisao);
+                        conformidade.setDataRevisao(dataRevisao);
                     } catch (ParseException e) {
                         System.out.println("Formato de data inválido. Os dados não foram atualizados.");
                     }
