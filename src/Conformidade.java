@@ -6,17 +6,23 @@ import java.util.List;
 import java.util.Scanner;
 
 class Conformidade {
+    int id = 0;
     private String descricao;
     private String classificacao;
     private Date dataRevisao;
-    private String status;
+    private ConformidadeStatusEnum status;
     private Date dataAlteracaoStatus;
 
-    public Conformidade(String descricao, String classificacao, Date dataRevisao, String status) {
+    public Conformidade(String descricao, String classificacao, Date dataRevisao, ConformidadeStatusEnum status) {
+        this.id += 1;
         this.descricao = descricao;
         this.classificacao = classificacao;
         this.dataRevisao = dataRevisao;
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getDescricao() {
@@ -35,12 +41,16 @@ class Conformidade {
         this.descricao = descricao;
     }
 
-    public String getStatus() {
+    public ConformidadeStatusEnum getStatus() {
         return status;
     }
 
     public Date getDataAlteracaoStatus() {
         return dataAlteracaoStatus;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setClassificacao(String classificacao) {
@@ -51,7 +61,7 @@ class Conformidade {
         this.dataRevisao = dataRevisao;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ConformidadeStatusEnum status) {
         this.status = status;
     }
 
@@ -59,6 +69,7 @@ class Conformidade {
     public void setDataAlteracaoStatus(Date dataAlteracaoStatus) {
         this.dataAlteracaoStatus = dataAlteracaoStatus;
     }
+
 
     public static void carregarConformidades(List<Conformidade> conformidades) {
         try (BufferedReader reader = new BufferedReader(new FileReader("conformidades.csv"))) {
@@ -69,8 +80,9 @@ class Conformidade {
                     String descricao = parts[0];
                     String classificacao = parts[1];
                     Date dataRevisao = new SimpleDateFormat("yyyy-MM-dd").parse(parts[2]);
-                    String status = parts[3];
-                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status));
+                    String statusString = parts[3];
+                    ConformidadeStatusEnum statusEnum = ConformidadeStatusEnum.valueOf(statusString);
+                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, statusEnum));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -80,9 +92,9 @@ class Conformidade {
         }
     }
 
-    public static void salvarConformidades(List<Conformidade> requisitos) {
+    public static void salvarConformidades(List<Conformidade> conformidades) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("conformidades.csv"))) {
-            for (Conformidade requisito : requisitos) {
+            for (Conformidade requisito : conformidades) {
                 String linha = requisito.getDescricao() + "," + requisito.getClassificacao() + "," +
                         new SimpleDateFormat("yyyy-MM-dd").format(requisito.getDataRevisao());
                 writer.println(linha);
@@ -122,7 +134,7 @@ class Conformidade {
                     System.out.print("Classificação do requisito não conforme (Alta - 5 dias/Média - 3 dias/Baixa - 1 dia): ");
                     String classificacao = scanner.nextLine();
                     System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
-                    String status = "Em análise";
+                    ConformidadeStatusEnum status = ConformidadeStatusEnum.CONFORME;
                     try {
                         Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
                         conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status));
@@ -137,23 +149,48 @@ class Conformidade {
     }
 
     public static void editarConformidade(Scanner scanner, List<Conformidade> conformidades) {
-        System.out.print("Informe a descrição do requisito a ser editado: ");
-        String descricao = scanner.next();
+        System.out.print("Informe a identificação (Id) da conformidade a ser editada: ");
+        int id = scanner.nextInt();
         boolean encontrado = false;
         for (Conformidade conformidade : conformidades) {
-            if (conformidade.getDescricao().equals(descricao)) {
+            if (conformidade.getId() == id) {
                 encontrado = true;
-                scanner.nextLine(); // Consumir a nova linha pendente
+                scanner.nextLine();
                 System.out.print("Nova descrição (ou pressione Enter para manter a atual): ");
                 String novaDescricao = scanner.nextLine();
                 if (!novaDescricao.isEmpty()) {
                     conformidade.setDescricao(novaDescricao);
                 }
+
                 System.out.print("Nova classificação (Alta/Média/Baixa ou pressione Enter para manter a atual): ");
                 String novaClassificacao = scanner.nextLine();
                 if (!novaClassificacao.isEmpty()) {
                     conformidade.setClassificacao(novaClassificacao);
                 }
+
+                System.out.print("Novo status (0 = CONFORME, 1 = NAO_CONFORME, 2 = EM_ESCALA ou Enter para manter o status atual): ");
+                int novoStatusInt = scanner.nextInt();
+                ConformidadeStatusEnum novoStatus;
+                if (novoStatusInt >= 0) {
+
+                    switch (novoStatusInt) {
+                        case 0:
+                            novoStatus = ConformidadeStatusEnum.CONFORME;
+                            break;
+                        case 1:
+                            novoStatus = ConformidadeStatusEnum.NAO_CONFORME;
+                            break;
+                        case 2:
+                            novoStatus = ConformidadeStatusEnum.EM_ESCALA;
+                            break;
+                        default:
+                            novoStatus = ConformidadeStatusEnum.CONFORME;
+                            break;
+                    }
+                    conformidade.setStatus(novoStatus);
+                }
+
+
                 System.out.print("Nova data até próxima revisão (formato dd/MM/yyyy ou pressione Enter para manter a atual): ");
                 String novaData = scanner.nextLine();
                 if (!novaData.isEmpty()) {
@@ -164,12 +201,12 @@ class Conformidade {
                         System.out.println("Formato de data inválido. Os dados não foram atualizados.");
                     }
                 }
-                System.out.println("Requisito editado com sucesso.");
+                System.out.println("Conformidade editado com sucesso.");
                 break;
             }
         }
         if (!encontrado) {
-            System.out.println("Requisito não encontrado.");
+            System.out.println("Conformidade não encontrado.");
         }
     }
 }
