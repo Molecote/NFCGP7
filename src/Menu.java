@@ -63,14 +63,14 @@ class Menu {
     }
 
     public static void exibirMenu_Conformidade() {
-        List<Conformidade> conformidades = new ArrayList<>();
+        ArrayList<Conformidade> conformidades = new ArrayList<>();
         Conformidade.carregarConformidades(conformidades);
         Scanner scanner = new Scanner(System.in);
         int opcao;
 
         do {
             System.out.println("Menu:");
-            System.out.println("1. Adicionar Não Conformidade");
+            System.out.println("1. Responder checklist");
             System.out.println("2. Editar Não Conformidades de um Arquivo");
             System.out.println("3. Salvar Não Conformidades em um Arquivo");
             System.out.println("4. Visualizar Não Conformidades de um Arquivo");

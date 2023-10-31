@@ -1,11 +1,8 @@
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -75,7 +72,7 @@ class Conformidade {
     }
 
 
-    public static void carregarConformidades(List<Conformidade> conformidades) {
+    public static void carregarConformidades(ArrayList<Conformidade> conformidades) {
         try (BufferedReader reader = new BufferedReader(new FileReader("conformidades.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -95,11 +92,14 @@ class Conformidade {
         }
     }
 
-    public static void salvarConformidades(List<Conformidade> conformidades) {
+    public static void salvarConformidades(ArrayList<Conformidade> conformidades) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("conformidades.csv"))) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             for (Conformidade conformidade : conformidades) {
                 String linha = conformidade.getDescricao() + "," + conformidade.getClassificacao() + "," +
-                        new SimpleDateFormat("yyyy-MM-dd").format(conformidade.getDataRevisao());
+                        dateFormatter.format(conformidade.getDataRevisao()) + "," +
+                        conformidade.getStatus() + "," +
+                        dateFormatter.format(conformidade.getDataAlteracaoStatus());
                 writer.println(linha);
             }
         } catch (IOException e) {
@@ -107,18 +107,18 @@ class Conformidade {
         }
     }
 
-    public static void visualizarConformidades(List<Conformidade> requisitos) {
-        for (Conformidade requisito : requisitos) {
-            System.out.println("Descrição: " + requisito.getDescricao());
-            System.out.println("Classificação: " + requisito.getClassificacao());
-            System.out.println("Data até próxima revisão: " + new SimpleDateFormat("yyyy-MM-dd").format(requisito.getDataRevisao()));
+    public static void visualizarConformidades(ArrayList<Conformidade> conformidades) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (Conformidade conformidade : conformidades) {
+            System.out.println("Descrição: " + conformidade.getDescricao());
+            System.out.println("Classificação: " + conformidade.getClassificacao());
+            System.out.println("Data até próxima revisão: " + dateFormatter.format(conformidade.getDataRevisao()));
             System.out.println();
         }
     }
 
-    public static void adicionarConformidade(List<Conformidade> conformidades) {
+    public static void adicionarConformidade(ArrayList<Conformidade> conformidades) {
         Scanner teclado = new Scanner(System.in);
-        teclado.nextLine();
         int conf;
         int taxa = 0;
         int total = 0;
@@ -157,7 +157,7 @@ class Conformidade {
         System.out.println("A taxa de aderência é: " + ((double) taxa / total) * 100 + "%");
     }
 
-    public static void editarConformidade(List<Conformidade> conformidades) {
+    public static void editarConformidade(ArrayList<Conformidade> conformidades) {
         Scanner teclado = new Scanner(System.in);
         System.out.print("Informe a identificação (Id) da conformidade a ser editada: ");
         int id = teclado.nextInt();
