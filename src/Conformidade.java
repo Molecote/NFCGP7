@@ -1,24 +1,29 @@
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 class Conformidade {
     int id = 0;
     private String descricao;
-    private String classificacao;
-    private Date dataRevisao;
+    private String classificacao = "N/A";
+    private LocalDate dataRevisao;
     private ConformidadeStatusEnum status;
-    private Date dataAlteracaoStatus;
+    private LocalDate dataAlteracaoStatus;
 
-    public Conformidade(String descricao, String classificacao, Date dataRevisao, ConformidadeStatusEnum status) {
+    public Conformidade(String descricao, String classificacao, LocalDate dataRevisao, ConformidadeStatusEnum status, LocalDate dataAlteracaoStatus) {
         this.id += 1;
         this.descricao = descricao;
         this.classificacao = classificacao;
         this.dataRevisao = dataRevisao;
         this.status = status;
+        this.dataAlteracaoStatus = dataAlteracaoStatus;
     }
 
     public int getId() {
@@ -33,7 +38,7 @@ class Conformidade {
         return classificacao;
     }
 
-    public Date getDataRevisao() {
+    public LocalDate getDataRevisao() {
         return dataRevisao;
     }
 
@@ -45,7 +50,7 @@ class Conformidade {
         return status;
     }
 
-    public Date getDataAlteracaoStatus() {
+    public LocalDate getDataAlteracaoStatus() {
         return dataAlteracaoStatus;
     }
 
@@ -57,7 +62,7 @@ class Conformidade {
         this.classificacao = classificacao;
     }
 
-    public void setDataRevisao(Date dataRevisao) {
+    public void setDataRevisao(LocalDate dataRevisao) {
         this.dataRevisao = dataRevisao;
     }
 
@@ -65,8 +70,7 @@ class Conformidade {
         this.status = status;
     }
 
-
-    public void setDataAlteracaoStatus(Date dataAlteracaoStatus) {
+    public void setDataAlteracaoStatus(LocalDate dataAlteracaoStatus) {
         this.dataAlteracaoStatus = dataAlteracaoStatus;
     }
 
@@ -79,14 +83,13 @@ class Conformidade {
                 if (parts.length == 5) {
                     String descricao = parts[0];
                     String classificacao = parts[1];
-                    Date dataRevisao = new SimpleDateFormat("yyyy-MM-dd").parse(parts[2]);
+                    LocalDate dataRevisao = LocalDate.parse(parts[2], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                     String statusString = parts[3];
                     ConformidadeStatusEnum statusEnum = ConformidadeStatusEnum.valueOf(statusString);
-                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, statusEnum));
+                    LocalDate dataAlteracaoStatus = LocalDate.parse(parts[4], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, statusEnum, dataAlteracaoStatus));
                 }
             }
-        } catch (FileNotFoundException e) {
-            // Arquivo não existe (não é um erro)
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,9 +97,9 @@ class Conformidade {
 
     public static void salvarConformidades(List<Conformidade> conformidades) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("conformidades.csv"))) {
-            for (Conformidade requisito : conformidades) {
-                String linha = requisito.getDescricao() + "," + requisito.getClassificacao() + "," +
-                        new SimpleDateFormat("yyyy-MM-dd").format(requisito.getDataRevisao());
+            for (Conformidade conformidade : conformidades) {
+                String linha = conformidade.getDescricao() + "," + conformidade.getClassificacao() + "," +
+                        new SimpleDateFormat("yyyy-MM-dd").format(conformidade.getDataRevisao());
                 writer.println(linha);
             }
         } catch (IOException e) {
@@ -108,68 +111,75 @@ class Conformidade {
         for (Conformidade requisito : requisitos) {
             System.out.println("Descrição: " + requisito.getDescricao());
             System.out.println("Classificação: " + requisito.getClassificacao());
-            System.out.println("Data até próxima revisão: " + new SimpleDateFormat("dd/MM/yyyy").format(requisito.getDataRevisao()));
+            System.out.println("Data até próxima revisão: " + new SimpleDateFormat("yyyy-MM-dd").format(requisito.getDataRevisao()));
             System.out.println();
         }
     }
 
-    public static void adicionarConformidade(Scanner scanner, List<Conformidade> conformidades) {
+    public static void adicionarConformidade(List<Conformidade> conformidades) {
         Scanner teclado = new Scanner(System.in);
-        scanner.nextLine(); // Consumir a nova linha pendente
+        teclado.nextLine();
         int conf;
         int taxa = 0;
         int total = 0;
-        for (int i = 0; i <= 14; i++) {
-            //System.out.println(pergunta do checklist);
+        ArrayList<String> perguntas = Checklist.carregarPerguntas(new ArrayList<>());
+        if (perguntas.isEmpty()) {
+            System.out.println("O arquivo de checklist está vazio. Adicione perguntas primeiro.");
+            return;
+        }
+        for (String pergunta : perguntas) {
+            System.out.println("Pergunta do checklist: ");
+            System.out.println(pergunta);
             System.out.println("O Resultado esperado está conforme? (1 para sim, 2 para não)");
             conf = Integer.parseInt(teclado.nextLine());
             switch (conf) {
                 case 1:
-                    System.out.println("");
+                    System.out.println("Ok! Arquivo adicionado a taxa de aderência.");
                     taxa += 1;
                     break;
                 case 2:
                     System.out.print("Descrição do requisito não conforme: ");
-                    String descricao = scanner.nextLine();
-                    System.out.print("Classificação do requisito não conforme (Alta - 5 dias/Média - 3 dias/Baixa - 1 dia): ");
-                    String classificacao = scanner.nextLine();
-                    System.out.print("Data até próxima revisão (formato dd/MM/yyyy): ");
-                    ConformidadeStatusEnum status = ConformidadeStatusEnum.CONFORME;
+                    String descricao = teclado.nextLine();
+                    System.out.print("Classificação do requisito não conforme (Comlexa - 5 dias/Mediana - 3 dias/Simples - 1 dia): ");
+                    String classificacao = teclado.nextLine();
+                    System.out.print("Data até próxima revisão (formato yyyy-MM-dd): ");
+                    ConformidadeStatusEnum status = ConformidadeStatusEnum.ANALISE;
                     try {
-                        Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(scanner.nextLine());
-                        conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status));
+                        LocalDate dataRevisao = LocalDate.parse(teclado.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                        conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status, LocalDate.now()));
                         System.out.println("Requisito não conforme adicionado com sucesso.");
-                    } catch (ParseException e) {
+                    } catch (DateTimeParseException e) {
                         System.out.println("Formato de data inválido. O requisito não será adicionado.");
                     }
             }
             total += 1;
         }
-        System.out.println("A taxa de aderência é :" + ((taxa / total)) / 100 + "%");
+        System.out.println("A taxa de aderência é: " + ((double) taxa / total) * 100 + "%");
     }
 
-    public static void editarConformidade(Scanner scanner, List<Conformidade> conformidades) {
+    public static void editarConformidade(List<Conformidade> conformidades) {
+        Scanner teclado = new Scanner(System.in);
         System.out.print("Informe a identificação (Id) da conformidade a ser editada: ");
-        int id = scanner.nextInt();
+        int id = teclado.nextInt();
         boolean encontrado = false;
         for (Conformidade conformidade : conformidades) {
             if (conformidade.getId() == id) {
                 encontrado = true;
-                scanner.nextLine();
+                teclado.nextLine();
                 System.out.print("Nova descrição (ou pressione Enter para manter a atual): ");
-                String novaDescricao = scanner.nextLine();
+                String novaDescricao = teclado.nextLine();
                 if (!novaDescricao.isEmpty()) {
                     conformidade.setDescricao(novaDescricao);
                 }
 
-                System.out.print("Nova classificação (Alta/Média/Baixa ou pressione Enter para manter a atual): ");
-                String novaClassificacao = scanner.nextLine();
+                System.out.print("Nova classificação de não conformidade (Alta/Média/Baixa ou pressione Enter para manter a atual): ");
+                String novaClassificacao = teclado.nextLine();
                 if (!novaClassificacao.isEmpty()) {
                     conformidade.setClassificacao(novaClassificacao);
                 }
 
                 System.out.print("Novo status (0 = CONFORME, 1 = NAO_CONFORME, 2 = EM_ESCALA ou Enter para manter o status atual): ");
-                int novoStatusInt = scanner.nextInt();
+                int novoStatusInt = teclado.nextInt();
                 ConformidadeStatusEnum novoStatus;
                 if (novoStatusInt >= 0) {
 
@@ -184,20 +194,20 @@ class Conformidade {
                             novoStatus = ConformidadeStatusEnum.EM_ESCALA;
                             break;
                         default:
-                            novoStatus = ConformidadeStatusEnum.CONFORME;
+                            novoStatus = ConformidadeStatusEnum.ANALISE;
                             break;
                     }
                     conformidade.setStatus(novoStatus);
+                    conformidade.setDataAlteracaoStatus(LocalDate.now());
                 }
 
-
-                System.out.print("Nova data até próxima revisão (formato dd/MM/yyyy ou pressione Enter para manter a atual): ");
-                String novaData = scanner.nextLine();
+                System.out.print("Nova data até próxima revisão (formato yyyy-MM-dd ou pressione Enter para manter a atual): ");
+                String novaData = teclado.nextLine();
                 if (!novaData.isEmpty()) {
                     try {
-                        Date dataRevisao = new SimpleDateFormat("dd/MM/yyyy").parse(novaData);
+                        LocalDate dataRevisao = LocalDate.parse(novaData, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                         conformidade.setDataRevisao(dataRevisao);
-                    } catch (ParseException e) {
+                    } catch (DateTimeParseException e) {
                         System.out.println("Formato de data inválido. Os dados não foram atualizados.");
                     }
                 }
