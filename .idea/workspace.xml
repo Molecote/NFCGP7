@@ -5,24 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8854ced-945a-445e-9797-3c5fa8e68f84" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NFCGP7/Conformidade.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NFCGP7/Conformidade.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NFCGP7/Email$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NFCGP7/Email$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NFCGP7/Email.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NFCGP7/Email.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NFCGP7/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NFCGP7/Menu.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NFCGP7/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NFCGP7/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Conformidade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Conformidade.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Email.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Email.java" afterDir="false" />
     </list>
-    <list id="87f479df-4e49-44e4-bdcb-6135d821aacb" name="Changes by gabri" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Checklist.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Checklist.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Conformidade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Conformidade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.java" afterDir="false" />
-    </list>
-    <list id="92442533-1507-43a3-886d-9ab0ce723cec" name="Changes by gabriV" comment="" />
-    <list id="bd4cdecb-8c5d-47bc-9105-3a33249d24ad" name="Changes by jgstressertrigo" comment="" />
+    <list id="87f479df-4e49-44e4-bdcb-6135d821aacb" name="Changes by gabri" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,22 +25,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/Conformidade.java">
-      <ranges>
-        <range start1="15" end1="15" start2="15" end2="17" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="16" end1="17" start2="18" end2="19" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="23" end1="23" start2="25" end2="27" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="79" end1="82" start2="83" end2="88" changelist="c8854ced-945a-445e-9797-3c5fa8e68f84" />
-        <range start1="83" end1="84" start2="89" end2="90" changelist="c8854ced-945a-445e-9797-3c5fa8e68f84" />
-        <range start1="85" end1="87" start2="91" end2="93" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="112" end1="112" start2="118" end2="119" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="140" end1="142" start2="147" end2="151" changelist="c8854ced-945a-445e-9797-3c5fa8e68f84" />
-        <range start1="148" end1="149" start2="157" end2="158" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-        <range start1="221" end1="221" start2="230" end2="239" changelist="87f479df-4e49-44e4-bdcb-6135d821aacb" />
-      </ranges>
-    </file>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />

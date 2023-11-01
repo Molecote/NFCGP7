@@ -25,7 +25,7 @@ public class Email {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("gabrenomocha@gmail.com"));
             message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("gabriel.molec@pucpr.edu.br"));
+                    InternetAddress.parse("kelly.bettio@pucpr.br"));
             message.setSubject("Escalonamento de NC");
 
             BodyPart messageBodyPart = new MimeBodyPart();
