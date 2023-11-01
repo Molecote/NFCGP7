@@ -47,4 +47,13 @@ public class Checklist {
             }
         } while (!pergunta.equalsIgnoreCase("sair"));
     }
+    public static void ApagarCSV(){
+        try {
+            FileWriter fileWriter = new FileWriter("checklist.csv", false);
+            fileWriter.close();
+            System.out.println("O arquivo CSV foi esvaziado com sucesso.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -13,14 +13,18 @@ class Conformidade {
     private LocalDate dataRevisao;
     private ConformidadeStatusEnum status;
     private LocalDate dataAlteracaoStatus;
+    private String QAResponsavel;
+    private String responsavelProjeto;
 
-    public Conformidade(String descricao, String classificacao, LocalDate dataRevisao, ConformidadeStatusEnum status, LocalDate dataAlteracaoStatus) {
+    public Conformidade(String descricao, String classificacao, LocalDate dataRevisao, ConformidadeStatusEnum status, LocalDate dataAlteracaoStatus, String QAResponsavel, String responsavelProjeto) {
         this.id += 1;
         this.descricao = descricao;
         this.classificacao = classificacao;
         this.dataRevisao = dataRevisao;
         this.status = status;
         this.dataAlteracaoStatus = dataAlteracaoStatus;
+        this.QAResponsavel = QAResponsavel;
+        this.responsavelProjeto = responsavelProjeto;
     }
 
     public int getId() {
@@ -51,6 +55,14 @@ class Conformidade {
         return dataAlteracaoStatus;
     }
 
+    public String getQAResponsavel() {
+        return QAResponsavel;
+    }
+
+    public String getResponsavelProjeto() {
+        return responsavelProjeto;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -77,14 +89,16 @@ class Conformidade {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 5) {
-                    String descricao = parts[0];
-                    String classificacao = parts[1];
+                if (parts.length == 6) {
+                    String responsavelProjeto = parts[0];
+                    String QAResponsavel = parts[1];
+                    String descricao = parts[2];
+                    String classificacao = parts[3];
                     LocalDate dataRevisao = LocalDate.parse(parts[2], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    String statusString = parts[3];
+                    String statusString = parts[4];
                     ConformidadeStatusEnum statusEnum = ConformidadeStatusEnum.valueOf(statusString);
-                    LocalDate dataAlteracaoStatus = LocalDate.parse(parts[4], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, statusEnum, dataAlteracaoStatus));
+                    LocalDate dataAlteracaoStatus = LocalDate.parse(parts[5], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, statusEnum, dataAlteracaoStatus, QAResponsavel, responsavelProjeto));
                 }
             }
         } catch (Exception e) {
@@ -110,6 +124,9 @@ class Conformidade {
     public static void visualizarConformidades(ArrayList<Conformidade> conformidades) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (Conformidade conformidade : conformidades) {
+            System.out.println("Id: " + conformidade.getId());
+            System.out.println("Responsável pelo projeto: " + conformidade.getResponsavelProjeto());
+            System.out.println("Responsável pela análise da conformidade: " + conformidade.getQAResponsavel());
             System.out.println("Descrição: " + conformidade.getDescricao());
             System.out.println("Classificação: " + conformidade.getClassificacao());
             System.out.println("Data até próxima revisão: " + dateFormatter.format(conformidade.getDataRevisao()));
@@ -138,15 +155,18 @@ class Conformidade {
                     taxa += 1;
                     break;
                 case 2:
-                    System.out.print("Descrição do requisito não conforme: ");
-                    String descricao = teclado.nextLine();
+                    System.out.println("Responsável pelo projeto: ");
+                    String responsavel_Projeto = teclado.nextLine();
+                    System.out.print("Responsável pela análise da conformidade: ");
+                    String QAResponsavel = teclado.nextLine();
+                    String descricao = "Descrição do requisito não conforme: " + pergunta;
                     System.out.print("Classificação do requisito não conforme (Comlexa - 5 dias/Mediana - 3 dias/Simples - 1 dia): ");
                     String classificacao = teclado.nextLine();
                     System.out.print("Data até próxima revisão (formato yyyy-MM-dd): ");
                     ConformidadeStatusEnum status = ConformidadeStatusEnum.ANALISE;
                     try {
                         LocalDate dataRevisao = LocalDate.parse(teclado.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status, LocalDate.now()));
+                        conformidades.add(new Conformidade(descricao, classificacao, dataRevisao, status, LocalDate.now(), QAResponsavel, responsavel_Projeto));
                         System.out.println("Requisito não conforme adicionado com sucesso.");
                     } catch (DateTimeParseException e) {
                         System.out.println("Formato de data inválido. O requisito não será adicionado.");
@@ -218,5 +238,14 @@ class Conformidade {
         if (!encontrado) {
             System.out.println("Conformidade não encontrado.");
         }
+    }
+    public static void ApagarCSV(){
+            try {
+                FileWriter fileWriter = new FileWriter("conformidades.csv", false);
+                fileWriter.close();
+                System.out.println("O arquivo CSV foi esvaziado com sucesso.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 }

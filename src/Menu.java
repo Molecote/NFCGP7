@@ -41,7 +41,8 @@ class Menu {
             System.out.println("Menu:");
             System.out.println("1. Adicionar Pergunta");
             System.out.println("2. Salvar Perguntas em um Arquivo");
-            System.out.println("3. Sair");
+            System.out.println("3. Apagar arquivo de Perguntas");
+            System.out.println("4. Sair");
             System.out.print("Escolha uma opção: ");
 
             opcao = scanner.nextInt();
@@ -54,12 +55,14 @@ class Menu {
                     Checklist.salvarPerguntas(perguntas);
                     break;
                 case 3:
+                    Conformidade.ApagarCSV();
+                case 4:
                     System.out.println("Saindo do programa.");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 3);
+        } while (opcao != 4);
     }
 
     public static void exibirMenu_Conformidade() {
@@ -74,7 +77,9 @@ class Menu {
             System.out.println("2. Editar Não Conformidades de um Arquivo");
             System.out.println("3. Salvar Não Conformidades em um Arquivo");
             System.out.println("4. Visualizar Não Conformidades de um Arquivo");
-            System.out.println("5. Sair");
+            System.out.println("5. Enviar por email as Não Conformidades");
+            System.out.println("6. Apagar arquivo de Não Conformidades");
+            System.out.println("7. Sair");
             System.out.print("Escolha uma opção: ");
 
             opcao = scanner.nextInt();
@@ -93,12 +98,17 @@ class Menu {
                     Conformidade.visualizarConformidades(conformidades);
                     break;
                 case 5:
+                    Email.dispararEmail();
+                    break;
+                case 6:
+                    Conformidade.ApagarCSV();
+                case 7:
                     System.out.println("Saindo do programa.");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 5);
+        } while (opcao != 7);
     }
 
 }
